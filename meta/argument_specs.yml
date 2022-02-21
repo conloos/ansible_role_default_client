@@ -1,0 +1,9 @@
+argument_specs:
+  main:
+    short_description: Main entrypoint
+    options:
+      default_user:
+        type: str
+        default: '{{ user_admin.name }}'
+        reqired: yes
+        description: Name of the default user. Used by the postfix configuration.

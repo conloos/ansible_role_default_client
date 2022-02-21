@@ -1,0 +1,51 @@
+---
+- name: kde package installation
+  block:
+  # prevent that yes/no questions needs user-interaction
+  - name: Assume-yes - write apt.conf.d/90forceyes
+    ansible.builtin.lineinfile:
+      path: /etc/apt/apt.conf.d/90assumeyes
+      line: APT::Get::Assume-Yes "true";
+      create: yes
+      owner: root
+      group: root
+      mode: '0644'
+    when: ansible_os_family == 'Debian'
+
+  - name: install kubuntu-desktop
+    ansible.builtin.apt:
+      name: '{{ item }}'
+      state: present
+      update_cache: true
+    register: apt_status
+    until: apt_status is success
+    delay: 6
+    retries: 10
+    with_items:
+      - kubuntu-desktop
+      - kubuntu-restricted-extras
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+
+  - name: translation files german
+    ansible.builtin.apt:
+      name: '{{ item }}'
+      state: present
+      update_cache: true
+    register: apt_status
+    until: apt_status is success
+    delay: 6
+    retries: 10
+    with_items:
+      - thunderbird-locale-de
+      - libreoffice-help-de
+      - language-pack-de-base
+      - firefox-locale-de
+      - language-pack-kde-de
+      - libreoffice-l10n-de
+      - aspell-de
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+...

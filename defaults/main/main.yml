@@ -1,0 +1,3 @@
+---
+default_user: '{{ user_admin.name }}'
+...

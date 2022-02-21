@@ -1,0 +1,31 @@
+---
+- name: xrdp package installation
+  block:
+    # source: https://linuxize.com/post/how-to-install-xrdp-on-ubuntu-20-04/
+  - name: install xrdp
+    ansible.builtin.apt:
+      name: '{{ item }}'
+      state: present
+      update_cache: true
+    register: apt_status
+    until: apt_status is success
+    delay: 6
+    retries: 10
+    with_items:
+      - xrdp
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+
+  - name: adding xrdp to xrdp
+    ansible.builtin.user:
+      name: xrdp
+      groups: ssl-cert
+      append: yes
+
+  - name: restart xrdp service 
+    ansible.builtin.systemd:
+      name: xrdp
+      daemon_reload: yes
+      state: restarted
+...

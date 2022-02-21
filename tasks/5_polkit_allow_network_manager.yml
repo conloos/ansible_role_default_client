@@ -1,0 +1,10 @@
+---
+# source: https://unix.stackexchange.com/questions/534469/system-policy-prevents-control-of-network-connections
+- name: change language to de_DE
+  ansible.builtin.copy:
+    src: 50-allow-network-manager.pkla
+    dest: '/etc/polkit-1/localauthority/50-local.d/50-allow-network-manager.pkla'
+    owner: root
+    group: root
+    mode: '0644'
+...

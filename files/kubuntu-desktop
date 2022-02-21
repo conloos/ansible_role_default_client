@@ -1,0 +1,7 @@
+Package: acpi-support
+Pin: release *
+Pin-Priority: -1
+
+Package: acpid
+Pin: release *
+Pin-Priority: -1
