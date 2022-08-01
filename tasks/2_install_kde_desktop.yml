@@ -1,0 +1,86 @@
+---
+- block: 
+  # prevent that yes/no questions needs user-interaction
+  - name: Assume-yes - write apt.conf.d/90forceyes
+    ansible.builtin.lineinfile:
+      path: /etc/apt/apt.conf.d/90assumeyes
+      line: APT::Get::Assume-Yes "true";
+      create: yes
+      owner: root
+      group: root
+      mode: '0644'
+    when: ansible_os_family == 'Debian'
+
+  - name: install kubuntu-desktop
+    ansible.builtin.apt:
+      name: '{{ item }}'
+      state: present
+      update_cache: true
+    register: apt_status
+    until: apt_status is success
+    delay: 6
+    retries: 10
+    with_items:
+      - kubuntu-desktop
+      - kubuntu-restricted-extras
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+
+  - name: translation files german
+    ansible.builtin.apt:
+      name: '{{ item }}'
+      state: present
+      update_cache: true
+    register: apt_status
+    until: apt_status is success
+    delay: 6
+    retries: 10
+    with_items:
+      - thunderbird-locale-de
+      - libreoffice-help-de
+      - language-pack-de-base
+      - firefox-locale-de
+      - language-pack-kde-de
+      - libreoffice-l10n-de
+      - aspell-de
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+
+  - name: change language to de_DE
+    ansible.builtin.copy:
+      src: plasma-localerc
+      dest: '/home/{{ default_user }}/.config/'
+      owner: '{{ default_user }}'
+      group: '{{ default_user }}'
+      mode: '0644'
+
+  # source: https://unix.stackexchange.com/questions/534469/system-policy-prevents-control-of-network-connections
+  # source2: https://askubuntu.com/questions/1237288/20-04-xrdp-kde-plasma-connect-issue
+  # source3: https://github.com/neutrinolabs/xrdp/issues/1773#issuecomment-759419847
+  - name: polkit configuration - righst for NetworkManager, refresh, update, restart
+    ansible.builtin.copy:
+      src: '{{ item }}'
+      dest: '/etc/polkit-1/localauthority/50-local.d/{{ item }}'
+      owner: root
+      group: root
+      mode: '0644'
+    with_items:
+      - xrdp-NetworkManager.pkla
+      - xrdp-refresh-sources.pkla
+      - xrdp-system-update.pkla
+      - xrdp-kde-restart.pkla
+
+  # source: https://help.ubuntu.com/community/xrdp
+  - name: polkit configuration - colord
+    ansible.builtin.copy:
+      src: '{{ item }}'
+      dest: '/etc/polkit-1/localauthority.conf.d/{{ item }}'
+      owner: root
+      group: root
+      mode: '0644'
+    with_items:
+      - 02-allow-colord.conf
+  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == true
+...

@@ -1,6 +1,14 @@
-# Ansible Role for configure clients.
+# Ansible Role for configure (debian) clients.
 
 **summary**
-This role is for configuring clients.
-It is based on the default_generic role and installs a kde desktop and xrdp for access with rdp. 
-Look in the tasks directory for each configuration. All configurations are held atomically via their own files. 
+This role is for configuration (debian) clients.
+Look in the tasks directory for each configuration.
+All configurations are held atomically via their own files. 
+
+## Variables that have to be defined
+
+| variable | description |
+| -------- | ----------- |
+| install_kde_desktop | bool install kde - main use to install kde in a conainer. So the acpi packages are maked. |
+| default_user | default user for the _postfix_ configuration. |
+

@@ -1,0 +1,6 @@
+[Allow admins to system update]
+Identity=unix-group:sudo
+Action=org.freedesktop.packagekit.system-update
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes

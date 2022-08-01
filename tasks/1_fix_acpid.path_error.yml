@@ -1,0 +1,59 @@
+---
+- block: 
+  # there is a problem:
+  # "Failed to preset unit: Transport endpoint is not connected"
+  # Workaround:
+  # Source: https://github.com/OpenNebula/one/issues/5504
+  # acpid -> acpi.path is the problem and have fixed
+
+  - name: install acpid
+    ansible.builtin.apt:
+      name: '{{ item }}'
+      state: present
+      update_cache: true
+    register: apt_status
+    until: apt_status is success
+    delay: 6
+    retries: 10
+    with_items:
+      - acpid
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+
+  - name: fix acpi.path
+    lineinfile:
+      path: /lib/systemd/system/acpid.path
+      insertafter: 'Description=ACPI Events Check'
+      line: 'ConditionVirtualization=!container'
+
+  - name: restart acpi
+    ansible.builtin.systemd:
+      name: '{{ item }}'
+      daemon_reload: yes
+      state: restarted
+      enabled: yes
+      masked: no
+    with_items:
+      - acpid
+      - acpid.path
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+
+  - name: install acpi-support
+    ansible.builtin.apt:
+      name: '{{ item }}'
+      state: present
+      update_cache: true
+    register: apt_status
+    until: apt_status is success
+    delay: 6
+    retries: 10
+    with_items:
+      - acpi-support
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == true
+...

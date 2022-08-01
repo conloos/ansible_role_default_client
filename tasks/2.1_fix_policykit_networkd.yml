@@ -1,0 +1,18 @@
+---
+# source: https://github.com/PackageKit/PackageKit/issues/336
+- name: packagekit bugfix
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '/usr/lib/systemd/system/{{ item }}'
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - packagekit.service
+
+- name: restart packagekit service 
+  ansible.builtin.systemd:
+    name: packagekit
+    daemon_reload: yes
+    state: restarted
+...

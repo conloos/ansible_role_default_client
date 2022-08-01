@@ -7,3 +7,11 @@ argument_specs:
         default: '{{ user_admin.name }}'
         reqired: yes
         description: Name of the default user. Used by the postfix configuration.
+      install_kde_desktop:
+        type: bool
+        required: false
+        description: Install kde-desktop 
+      full_ca_cert_path:
+        type: str
+        required: false
+        description: Path to the cert to add to firefox keystore

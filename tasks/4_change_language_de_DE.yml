@@ -1,9 +1,0 @@
----
-- name: change language to de_DE
-  ansible.builtin.copy:
-    src: plasma-localerc
-    dest: '/home/{{ default_user }}/.config/'
-    owner: '{{ default_user }}'
-    group: '{{ default_user }}'
-    mode: '0644'
-...
