@@ -4,7 +4,7 @@ argument_specs:
     options:
       default_user:
         type: str
-        default: '{{ user_admin.name }}'
+        default: '{{ vault_user_admin.name }}'
         reqired: yes
         description: Name of the default user. Used by the postfix configuration.
       install_kde_desktop:
