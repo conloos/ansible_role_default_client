@@ -10,7 +10,7 @@
     ansible.builtin.apt:
       name: '{{ item }}'
       state: present
-      update_cache: true
+      update_cache: True
     register: apt_status
     until: apt_status is success
     delay: 6
@@ -45,7 +45,7 @@
     ansible.builtin.apt:
       name: '{{ item }}'
       state: present
-      update_cache: true
+      update_cache: True
     register: apt_status
     until: apt_status is success
     delay: 6
@@ -55,5 +55,5 @@
     environment:
       DEBIAN_FRONTEND: noninteractive
     when: ansible_os_family == 'Debian'
-  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == true
+  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == True
 ...

@@ -4,7 +4,7 @@
   - name: Assume-yes - write apt.conf.d/90forceyes
     ansible.builtin.lineinfile:
       path: /etc/apt/apt.conf.d/90assumeyes
-      line: APT::Get::Assume-Yes "true";
+      line: APT::Get::Assume-Yes "True";
       create: yes
       owner: root
       group: root
@@ -15,7 +15,7 @@
     ansible.builtin.apt:
       name: '{{ item }}'
       state: present
-      update_cache: true
+      update_cache: True
     register: apt_status
     until: apt_status is success
     delay: 6
@@ -31,7 +31,7 @@
     ansible.builtin.apt:
       name: '{{ item }}'
       state: present
-      update_cache: true
+      update_cache: True
     register: apt_status
     until: apt_status is success
     delay: 6
@@ -82,5 +82,5 @@
       mode: '0644'
     with_items:
       - 02-allow-colord.conf
-  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == true
+  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == True
 ...

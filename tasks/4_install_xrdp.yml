@@ -6,7 +6,7 @@
     ansible.builtin.apt:
       name: '{{ item }}'
       state: present
-      update_cache: true
+      update_cache: True
     register: apt_status
     until: apt_status is success
     delay: 6
@@ -28,7 +28,7 @@
       name: xrdp
       daemon_reload: yes
       state: restarted
-  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == true
+  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == True
 
 - name: Populate service facts
   service_facts:
@@ -62,5 +62,5 @@
       name: xrdp
       daemon_reload: yes
       state: restarted
-  when: ("'step-renew.service' in services") and hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == true
+  when: ("'step-renew.service' in services") and hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == True
 ...

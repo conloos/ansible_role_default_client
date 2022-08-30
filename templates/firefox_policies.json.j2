@@ -2,7 +2,7 @@
     "policies": {
 {% if hostvars['localhost']['full_ca_cert_path'] is defined and hostvars['localhost']['full_ca_cert_path']|length > 0 %}
         "Certificates": {
-            "ImportEnterpriseRoots": true,
+            "ImportEnterpriseRoots": True,
             "Install": [
                 "{{ hostvars['localhost']['full_ca_cert_path'] }}"
             ]
@@ -11,7 +11,7 @@
       "SSLVersionMin": "tls1.2",
       "Homepage": {
       "URL": "https://lab-awx.bodomos.lan:8043/#/login",
-      "Locked": true,
+      "Locked": True,
       "Additional": [],
       "StartPage": "previous-session"
       },
@@ -41,6 +41,6 @@
           "install_url": "https://addons.mozilla.org/firefox/downloads/file/3935106/deutsch_de_language_pack-99.0.1buildid20220411.174855-fx.xpi"
         }
       },
-      "ExtensionUpdate": true
+      "ExtensionUpdate": True
     }
 }
