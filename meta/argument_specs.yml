@@ -8,6 +8,10 @@ argument_specs:
     author:
       - Frank Dornheim
     options:
+      cloudinit_fqdn:
+        type: str
+        required: true
+        description: FQDN of the system.
       default_user:
         type: str
         description: Name of the default user. Used by the postfix configuration.
