@@ -1,0 +1,66 @@
+---
+- name: Xrdp package installation
+  block:
+    # source: https://linuxize.com/post/how-to-install-xrdp-on-ubuntu-20-04/
+  - name: Install xrdp
+    ansible.builtin.apt:
+      name: '{{ item }}'
+      state: present
+      update_cache: true
+    register: apt_status
+    until: apt_status is success
+    delay: 6
+    retries: 10
+    with_items:
+      - xrdp
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+    when: ansible_os_family == 'Debian'
+
+  - name: Adding xrdp to ssl-group
+    ansible.builtin.user:
+      name: xrdp
+      groups: ssl-cert
+      append: true
+
+  - name: Restart xrdp service
+    ansible.builtin.systemd:
+      name: xrdp
+      daemon_reload: true
+      state: restarted
+  when: install_kde_desktop is defined and install_kde_desktop
+
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: Configure ssl
+  block:
+    - name: Xrdp.ini add host certificate
+      ansible.builtin.lineinfile:
+        path: /etc/xrdp/xrdp.ini
+        search_string: 'certificate='
+        line: 'certificate=/etc/ssl/{{ cloudinit_fqdn }}.crt'
+        create: true
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_os_family == 'Debian'
+
+    - name: Xrdp.ini add host keyfile
+      ansible.builtin.lineinfile:
+        path: /etc/xrdp/xrdp.ini
+        search_string: 'key_file='
+        line: 'key_file=/etc/ssl/{{ cloudinit_fqdn }}.key'
+        create: true
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_os_family == 'Debian'
+
+    - name: Restart xrdp service
+      ansible.builtin.systemd:
+        name: xrdp
+        daemon_reload: true
+        state: restarted
+  when: ('step-renew.service' in services) and install_kde_desktop is defined and install_kde_desktop
+...

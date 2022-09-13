@@ -1,6 +1,6 @@
 ---
 # source: https://github.com/PackageKit/PackageKit/issues/336
-- name: packagekit bugfix
+- name: Packagekit bugfix
   ansible.builtin.copy:
     src: '{{ item }}'
     dest: '/usr/lib/systemd/system/{{ item }}'
@@ -10,9 +10,9 @@
   with_items:
     - packagekit.service
 
-- name: restart packagekit service 
+- name: Restart packagekit service
   ansible.builtin.systemd:
     name: packagekit
-    daemon_reload: yes
+    daemon_reload: true
     state: restarted
 ...

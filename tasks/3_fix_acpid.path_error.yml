@@ -1,16 +1,22 @@
 ---
-- block: 
+- name: Fix Acpi Error
+  block:
   # there is a problem:
   # "Failed to preset unit: Transport endpoint is not connected"
   # Workaround:
   # Source: https://github.com/OpenNebula/one/issues/5504
   # acpid -> acpi.path is the problem and have fixed
 
-  - name: install acpid
+  # ToDo: Check
+  # Add directive to avoid monitoring of acpi.path on containers.
+  # Thanks to Nick Brown <nickbroon@gmail.com> and Simon Deziel <simon@sdeziel.info> for the patches.
+  # (Closes: #1009301).
+
+  - name: Install acpid
     ansible.builtin.apt:
       name: '{{ item }}'
       state: present
-      update_cache: True
+      update_cache: true
     register: apt_status
     until: apt_status is success
     delay: 6
@@ -21,19 +27,19 @@
       DEBIAN_FRONTEND: noninteractive
     when: ansible_os_family == 'Debian'
 
-  - name: fix acpi.path
-    lineinfile:
+  - name: Fix acpi.path
+    ansible.builtin.lineinfile:
       path: /lib/systemd/system/acpid.path
       insertafter: 'Description=ACPI Events Check'
       line: 'ConditionVirtualization=!container'
 
-  - name: restart acpi
+  - name: Restart acpi
     ansible.builtin.systemd:
       name: '{{ item }}'
-      daemon_reload: yes
+      daemon_reload: true
       state: restarted
-      enabled: yes
-      masked: no
+      enabled: true
+      masked: false
     with_items:
       - acpid
       - acpid.path
@@ -41,11 +47,11 @@
       DEBIAN_FRONTEND: noninteractive
     when: ansible_os_family == 'Debian'
 
-  - name: install acpi-support
+  - name: Install acpi-support
     ansible.builtin.apt:
       name: '{{ item }}'
       state: present
-      update_cache: True
+      update_cache: true
     register: apt_status
     until: apt_status is success
     delay: 6
@@ -55,5 +61,5 @@
     environment:
       DEBIAN_FRONTEND: noninteractive
     when: ansible_os_family == 'Debian'
-  when: hostvars['localhost']['install_kde_desktop'] is defined and hostvars['localhost']['install_kde_desktop'] == True
+  when: install_kde_desktop is defined and install_kde_desktop
 ...

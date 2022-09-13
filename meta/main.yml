@@ -1,17 +1,15 @@
-# Standards: 0.2
 ---
 galaxy_info:
-  # @meta author:value: [Frank Dornheim](https://github.com/conloos)
-  author: "Frank Dornheim <dornheim@posteo.de>"
-  role_name: default_client
-  description: Role for default settings.
+  author: "Frank Dornheim"
+  role_name: "ansible_default_client"
+  description: "An ansible role to configure cliets e.g create a KDE desktop on a cloud image, connectable by xrdp."
   license: GPLv3
   min_ansible_version: 2.11.5
   platforms:
     - name: Ubuntu
       versions:
-        - 21.10
-  galaxy_tags: []
-
-dependencies:
-  - default_generic
+        - jammy
+  galaxy_tags:
+    - ansible
+dependencies: []
+...
