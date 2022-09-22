@@ -1,18 +1,18 @@
 ---
 - name: Check if role exist
   ansible.builtin.stat:
-    path: roles/ansible-default-generic
+    path: roles/ansible_role_default_generic
   delegate_to: localhost
-  register: role_ansible_cloud_init
+  register: path_ansible_role_default_generic
 
-- name: No role ansible-default-generic found  # noqa ignore-errors
+- name: No role ansible_role_default_generic found  # noqa ignore-errors
   ansible.builtin.fail:
-    msg: "roles/ansible-default-generic not found so don't run that role"
-  failed_when: not role_ansible_cloud_init.stat.exists
+    msg: "roles/ansible_role_default_generic not found so don't run that role"
+  failed_when: not path_ansible_role_default_generic.stat.exists
   ignore_errors: true
 
-- name: Include role - ansible-default-generic
+- name: Include role - ansible_role_default_generic
   ansible.builtin.include_role:
-    name: ansible-default-generic
-  when: role_ansible_cloud_init.stat.exists
+    name: ansible_role_default_generic
+  when: path_ansible_role_default_generic.stat.exists
 ...
