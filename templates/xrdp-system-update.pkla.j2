@@ -1,5 +1,7 @@
+# Ansible manageged. Local modifactions may overwritten.
+
 [Allow admins to system update]
-Identity=unix-group:sudo
+Identity=unix-group:{{ permitted_groups | join(';unix-group:') }}
 Action=org.freedesktop.packagekit.system-update
 ResultAny=yes
 ResultInactive=yes

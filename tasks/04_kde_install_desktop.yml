@@ -3,9 +3,11 @@
   block:
   # prevent that yes/no questions needs user-interaction
   - name: Assume-yes - write apt.conf.d/90forceyes
-    ansible.builtin.lineinfile:
+    ansible.builtin.blockinfile:
       path: /etc/apt/apt.conf.d/90assumeyes
-      line: APT::Get::Assume-Yes "True";
+      block: |
+        APT::Get::Assume-Yes "true";
+        APT::Get::allow-downgrades "true";
       create: true
       owner: root
       group: root
@@ -57,31 +59,31 @@
       group: '{{ default_user }}'
       mode: '0644'
 
-  # source: https://unix.stackexchange.com/questions/534469/system-policy-prevents-control-of-network-connections
+  # source1: https://unix.stackexchange.com/questions/534469/system-policy-prevents-control-of-network-connections
   # source2: https://askubuntu.com/questions/1237288/20-04-xrdp-kde-plasma-connect-issue
   # source3: https://github.com/neutrinolabs/xrdp/issues/1773#issuecomment-759419847
   - name: Polkit configuration - righst for NetworkManager, refresh, update, restart
-    ansible.builtin.copy:
-      src: '{{ item }}'
-      dest: '/etc/polkit-1/localauthority/50-local.d/{{ item }}'
+    ansible.builtin.template:
+      src: '{{ item.src }}'
+      dest: '/etc/polkit-1/localauthority/50-local.d/{{ item.dest }}'
       owner: root
       group: root
       mode: '0644'
     with_items:
-      - xrdp-NetworkManager.pkla
-      - xrdp-refresh-sources.pkla
-      - xrdp-system-update.pkla
-      - xrdp-kde-restart.pkla
+      - { src: xrdp-allow-colord.pkla.j2, dest: xrdp-allow-colord.pkla }
+      - { src: xrdp-NetworkManager.pkla.j2, dest: xrdp-NetworkManager.pkla }
+      - { src: xrdp-refresh-sources.pkla.j2, dest: xrdp-refresh-sources.pkla }
+      - { src: xrdp-system-update.pkla.j2, dest: xrdp-system-update.pkla }
+      - { src: xrdp-kde-restart.pkla.j2, dest: xrdp-kde-restart.pkla }
 
-  # source: https://help.ubuntu.com/community/xrdp
-  - name: Polkit configuration - colord
-    ansible.builtin.copy:
-      src: '{{ item }}'
-      dest: '/etc/polkit-1/localauthority.conf.d/{{ item }}'
-      owner: root
-      group: root
+  # AD/LDAP Admin groups should be admin in KDE (polkit)
+  - name: polkit AD/LDAP configuration
+    ansible.builtin.template:
+      src: 52-sssd-admin.conf.j2
+      dest: "/etc/polkit-1/localauthority.conf.d/52-sssd-admin.conf"
+      owner: "root"
+      group: "root"
       mode: '0644'
-    with_items:
-      - 02-allow-colord.conf
+    when: permitted_groups is defined and permitted_groups
   when: install_kde_desktop is defined and install_kde_desktop
 ...

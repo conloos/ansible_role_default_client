@@ -1,3 +1,5 @@
+# Ansible manageged. Local modifactions may overwritten.
+
 [Formats]
 LANG=de_DE.UTF-8
 

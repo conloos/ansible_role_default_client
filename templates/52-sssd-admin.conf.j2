@@ -1,0 +1,4 @@
+# Ansible manageged. Local modifactions may overwritten.
+
+[Configuration]
+AdminIdentities=unix-group:{{ permitted_groups | join(';unix-group:') }}

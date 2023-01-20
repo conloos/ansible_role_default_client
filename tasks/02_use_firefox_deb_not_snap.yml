@@ -1,0 +1,14 @@
+---
+- name: Add mozillateam ppa repository into sources list
+  ansible.builtin.apt_repository:
+    repo: 'ppa:mozillateam/ppa'
+    state: present
+
+- name: Set firefox package (not snap) as preferred
+  ansible.builtin.copy:
+    src: "mozilla-firefox"
+    dest: "/etc/apt/preferences.d/mozilla-firefox"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+...

@@ -4,3 +4,5 @@
   with_items: "{{ lookup( 'ansible.builtin.fileglob', '*.yml' ).split(',') | reject('search','main.yml') | sort }}"
   loop_control:
     loop_var: element
+  tags: always
+...

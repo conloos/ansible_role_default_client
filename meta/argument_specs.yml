@@ -18,6 +18,9 @@ argument_specs:
       install_kde_desktop:
         type: bool
         description: Install kde-desktop
+      firefox_allowed_to_install_extensions:
+        type': bool
+        description: disable policy to block extensions installed by user
       full_ca_cert_path:
         type: str
         description: Path to the cert to add to firefox keystore

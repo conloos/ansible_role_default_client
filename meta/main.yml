@@ -11,5 +11,6 @@ galaxy_info:
         - jammy
   galaxy_tags:
     - ansible
-dependencies: []
+dependencies:
+  - role: ansible_role_default_generic
 ...

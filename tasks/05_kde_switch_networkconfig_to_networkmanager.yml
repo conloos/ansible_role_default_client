@@ -1,0 +1,46 @@
+---
+- name: If the network is configured by cloudinit, we have to switch to Network Mangager to get a working KDE
+  block:
+    # KDE have issues if the network is controlled by systemd-networkd
+    # We switch to NetworkManager
+    - name: collect facts about system services
+      service_facts:
+      register: services_state
+
+    - name: Switch networkrenderer to Network Manager
+      ansible.builtin.replace:
+        path: /etc/netplan/50-cloud-init.yaml
+        regexp: 'networkd'
+        replace: 'NetworkManager'
+      when: 
+        - ansible_os_family == 'Debian'
+        - install_kde_desktop
+
+    - name: netplan-apply
+      ansible.builtin.shell:
+        cmd: "/usr/sbin/netplan apply"
+
+    - name: Enable systemd NetworkManager
+      ansible.builtin.systemd:
+        name: NetworkManager
+        state: started
+        enabled: true
+        masked: false
+        daemon_reload: true
+      when:
+        - ( 'NetworkManager.service' in services )
+        - install_kde_desktop
+
+    - name: Disable systemd-networkd
+      ansible.builtin.systemd:
+        name: systemd-networkd
+        state: stopped
+        enabled: false
+        masked: false
+        daemon_reload: true
+      when:
+        - ( 'NetworkManager.service' in services )
+        - services_state.ansible_facts.services['NetworkManager.service'].state == 'running'
+        - install_kde_desktop
+  when: cloudinit_network_raw is defined and cloudinit_network_raw | length >=0
+...

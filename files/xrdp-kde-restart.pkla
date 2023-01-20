@@ -1,9 +1,0 @@
-[Allow admins to shutdown from XRDP]
-Identity=unix-group:sudo
-Action=org.freedesktop.login1.power-off
-ResultAny=yes
-
-[Allow admins to reboot from XRDP]
-Identity=unix-group:sudo
-Action=org.freedesktop.login1.reboot
-ResultAny=yes

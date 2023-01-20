@@ -1,5 +1,7 @@
+# Ansible manageged. Local modifactions may overwritten.
+
 [xrdp-Netowrkmanager]
-Identity=unix-group:sudo
+Identity=unix-group:{{ permitted_groups | join(';unix-group:') }}
 Action=org.freedesktop.NetworkManager.network-control
 ResultAny=yes
 ResultInactive=yes

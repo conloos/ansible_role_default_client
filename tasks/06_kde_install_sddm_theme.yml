@@ -1,0 +1,23 @@
+---
+- name: Extract SDDM Theme
+  ansible.builtin.unarchive:
+    src: "ExposeBlue-SDDM-1.0.tar.bz2"
+    dest: "/usr/share/sddm/themes/"
+    creates: "/usr/share/sddm/themes/ExposeBlue"
+
+- name: create sddm settings directory
+  ansible.builtin.file:
+    path: "/etc/sddm.conf.d"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: copy config
+  ansible.builtin.copy:
+    src: "kde_settings.conf"
+    dest: "/etc/sddm.conf.d/kde_settings.conf"
+    owner: "root"
+    group: "root"
+    mode: "644"
+...

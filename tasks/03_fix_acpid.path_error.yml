@@ -61,5 +61,8 @@
     environment:
       DEBIAN_FRONTEND: noninteractive
     when: ansible_os_family == 'Debian'
-  when: install_kde_desktop is defined and install_kde_desktop
+  when: 
+    - (install_kde_desktop is defined and install_kde_desktop) 
+    - ansible_virtualization_role == "guest"
+    - ansible_facts['lsb']['release'] == "22.04"
 ...
